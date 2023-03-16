@@ -1,0 +1,12 @@
+textarea{
+    resize: revert;
+}
+
+.column{
+    text-align: center;
+    width: 30%;
+}
+
+li{
+    list-style-type: none;
+}
