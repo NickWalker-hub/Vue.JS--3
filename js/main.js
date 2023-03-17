@@ -27,6 +27,10 @@ Vue.component('cards', {
         eventBus.$on('create', card => {
             this.column1.push(card)
         })
+        eventBus.$on('moving1', card => {
+            this.column2.push(card)
+            this.column1.splice(this.column1.indexOf(card), 1)
+        })
     }
 });
 
@@ -120,6 +124,7 @@ Vue.component('column1', {
                     </form>
                 </div>
             </ul>
+            <button @click="moving(card)">➞</button>
         </div>
     </div>
     `,
@@ -134,17 +139,38 @@ Vue.component('column1', {
         updateTask(card){
             this.column1.push(card)
             this.column1.splice(this.column1.indexOf(card), 1)
+            card.dateLastChange = new Date().toLocaleString()
+            return card.updateCard = false
+        },
+        moving(card){
+            eventBus.$emit('moving1', card)
         },
     },
 });
 
 Vue.component('column2', {
     props:{
-
+        column2:{
+            type: Array,
+            required: true
+        },
+        card:{
+            type:Object,
+            required: true
+        },
     },
     template:`
     <div class="column">
-        <h3>Задачи в работе</h3>
+        <h2>Задачи в работе</h2>
+        <div v-for="card in column2">
+            <ul>
+                <li><b>Заголовок:</b> {{ card.title }}</li>
+                <li><b>Описание</b> {{ card.description }}</li>
+                <li><b>Дедлайн:</b> {{ card.dateDeadline }}</li>
+                <li><b>Создано:</b> {{ card.dateCreate }}</li>
+                <li v-if="card.dateLastChange"><b>Последнее изменение</b>{{ card.dateLastChange }}</li>
+            </ul>
+        </div>     
     </div>
     `,
     methods: {
@@ -158,7 +184,7 @@ Vue.component('column3', {
     },
     template:`
     <div class="column">
-        <h3>Тестирование</h3>
+        <h2>Тестирование</h2>
     </div>
     `,
     methods: {
@@ -172,7 +198,7 @@ Vue.component('column4', {
     },
     template:`
     <div class="column">
-        <h3>Выполненные задачи</h3>
+        <h2>Выполненные задачи</h2>
     </div>
     `,
     methods: {
