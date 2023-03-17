@@ -39,8 +39,19 @@ Vue.component('cards', {
         eventBus.$on('moving3-2', card => {
             this.column2.push(card)
             this.column3.splice(this.column3.indexOf(card), 1)
+            card.dateEnd = new Date().toLocaleDateString()
         });
-    }
+        eventBus.$on('moving3-4', card => {
+            this.column4.push(card)
+            this.column3.splice(this.column3.indexOf(card), 1)
+            card.dateEnd = new Date().toLocaleDateString()
+            card.dateEnd = card.dateEnd.split('.').reverse().join('-')
+            console.log(card)
+            if (card.dateEnd > card.dateDeadline){
+                card.inTime = false
+            }
+        });
+    },
 });
 
 Vue.component('fill', {
@@ -110,12 +121,12 @@ Vue.component('column1', {
         <h2>Запланированные задачи</h2>
         <div v-for="card in column1">
             <ul>
-                <li><b>Заголовок:</b> {{ card.title }}</li>
-                <li><b>Описание:</b> {{ card.description }}</li>
-                <li><b>Дедлайн:</b> {{ card.dateDeadline }}</li>
-                <li><b>Создано:</b> {{ card.dateCreate }}</li>
-                <li v-if="card.dateLastChange"><b>Последнее изменение</b>{{ card.dateLastChange }}</li>
-                <button @click="(card)">Удалить</button>
+                <li><b>Заголовок:</b>{{ card.title }}</li>
+                <li><b>Описание:</b>{{ card.description }}</li>
+                <li><b>Дедлайн:</b>{{ card.dateDeadline }}</li>
+                <li><b>Создано:</b>{{ card.dateCreate }}</li>
+                <li v-if="card.dateLastChange"><b>Последнее изменение:</b>{{ card.dateLastChange }}</li>
+                <button @click="deleteCard(card)">Удалить</button>
                 <button @click="updateC">Отредактировать задачу</button>
                 <div v-if="updateCard">
                     <form @submit.prevent="updateTask(card)">
@@ -178,12 +189,12 @@ Vue.component('column2', {
         <h2>Задачи в работе</h2>
         <div v-for="card in column2">
             <ul>
-                <li><b>Заголовок:</b> {{ card.title }}</li>
-                <li><b>Описание:</b> {{ card.description }}</li>
-                <li><b>Дедлайн:</b> {{ card.dateDeadline }}</li>
-                <li><b>Создано:</b> {{ card.dateCreate }}</li>
-                <li v-if="card.dateLastChange"><b>Последнее изменение</b>{{ card.dateLastChange }}</li>
-                <li v-if="card.reason.length"><b>Комментарий: </b><li v-for="r in card.reason">{{ r }}</li></li>
+                <li><b>Заголовок:</b>{{ card.title }}</li>
+                <li><b>Описание:</b>{{ card.description }}</li>
+                <li><b>Дедлайн:</b>{{ card.dateDeadline }}</li>
+                <li><b>Создано:</b>{{ card.dateCreate }}</li>
+                <li v-if="card.dateLastChange"><b>Последнее изменение:</b>{{ card.dateLastChange }}</li>
+                <li v-if="card.reason.length"><b>Комментарий:</b><li v-for="r in card.reason">{{ r }}</li></li>
                 <button @click="updateC(card)">Отредактировать задачу</button>
                 <div v-if="card.updateCard">
                     <form @submit.prevent="updateTask(card)">
@@ -214,7 +225,7 @@ Vue.component('column2', {
         updateTask(card){
             this.column2.push(card)
             this.column2.splice(this.column2.indexOf(card), 1)
-            card.dateL = new Date().toLocaleString()
+            card.dateLastChange = new Date().toLocaleString()
             return card.updateCard = false
         },
         moving(card){
@@ -243,10 +254,10 @@ Vue.component('column3', {
         <h2>Тестирование</h2>
         <div v-for="card in column3">
             <ul>
-                <li><b>Заголовок:</b> {{ card.title }}</li>
-                <li><b>Описание:</b> {{ card.description }}</li>
-                <li><b>Дедлайн:</b> {{ card.dateDeadLine }}</li>
-                <li><b>Создано:</b> {{ card.dateCreate }}</li>
+                <li><b>Заголовок:</b>{{ card.title }}</li>
+                <li><b>Описание:</b>{{ card.description }}</li>
+                <li><b>Дедлайн:</b>{{ card.dateDeadLine }}</li>
+                <li><b>Создано:</b>{{ card.dateCreate }}</li>
                 <li v-if="card.dateLastChange"><b>Последнее изменение:</b>{{ card.dateLastChange }}</li>
                 <li v-if="card.reason.length"><b>Комментарий:</b><li v-for="r in card.reason">{{ r }}</li></li>
                 <li v-if="moveBack">
@@ -274,7 +285,7 @@ Vue.component('column3', {
                 </div>
             </ul>
             <button @click="movingBack">⮪</button>
-            <button @click="moving">⮫</button>
+            <button @click="moving(card)">⮫</button>
         </div>  
     </div>
     `,
@@ -297,7 +308,6 @@ Vue.component('column3', {
         },
         moving(card){
             eventBus.$emit('moving3-4', card)
-            card.dateEnd = new Date().toLocaleDateString()
         },
         movingBack(){
             this.moveBack = true
@@ -306,7 +316,7 @@ Vue.component('column3', {
             card.reason.push(this.reason2)
             eventBus.$emit('moving3-2', card)
             this.reason2 = null
-            this.moveBack = false
+            this.moveBack = true
         },
     },
 });
@@ -327,11 +337,13 @@ Vue.component('column4', {
         <h2>Выполненные задачи</h2>
         <div v-for="card in column4">
             <ul>
-                <li><b>Заголовок:</b> {{ card.title }}</li>
-                <li><b>Описание:</b> {{ card.description }}</li>
-                <li><b>Дедлайн:</b> {{ card.dateDeadLine }}</li>
-                <li><b>Создано:</b> {{ card.dateCreate }}</li>
-                <li v-if="card.dateLastChange"><b>Пследнее изменение:</b>{{ card.dateLastChange }}</li>
+                <li><b>Заголовок:</b>{{ card.title }}</li>
+                <li><b>Описание:</b>{{ card.description }}</li>
+                <li><b>Дедлайн:</b>{{ card.dateDeadLine }}</li>
+                <li><b>Создано:</b>{{ card.dateCreate }}</li>
+                <li v-if="card.dateLastChange"><b>Последнее изменение:</b>{{ card.dateLastChange }}</li>
+                <li v-if="card.inTime">Задача выполнена в срок 👍</li>
+                <li v-else>Задача выполнена не в срок 👎(</li>
             </ul>
         </div>
     </div>
