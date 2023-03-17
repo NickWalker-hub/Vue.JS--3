@@ -18,7 +18,7 @@ Vue.component('cards', {
             column2:[],
             column3:[],
             column4:[],
-            updateCard: false
+            showCard: true,
         }
     },
     methods:{
@@ -66,6 +66,7 @@ Vue.component('fill', {
                 description: this.description,
                 dateDeadline: this.dateDeadline,
                 dateCreate: new Date().toLocaleString(),
+                updateCard: false,
                 dateLastChange: null,
                 dateEnd: null,
                 inTime: true,
@@ -89,10 +90,6 @@ Vue.component('column1', {
             type: Array,
             required: true
         },
-        updateCard:{
-            type: Boolean,
-            required: true
-        }
     },
     template:`
     <div class="column">
@@ -104,25 +101,25 @@ Vue.component('column1', {
                 <li><b>Дедлайн:</b> {{ card.dateDeadline }}</li>
                 <li><b>Создано:</b> {{ card.dateCreate }}</li>
                 <li v-if="card.dateLastChange"><b>Последнее изменение</b>{{ card.dateLastChange }}</li>
+                <button @click="deleteCard(card)">Удалить</button>
+                <button @click="updateC">Редактировать</button>
+                <div v-if="updateCard">
+                    <form @submit.prevent="updateTask(card)">
+                        <p>Заголовок:
+                            <input type="text" v-model="card.title" maxlength="50" placeholder="">
+                        </p>
+                        <p>Описание:
+                            <textarea v-model="card.description" cols="25" rows="5"></textarea>
+                        </p>
+                        <p>Дедлайн:
+                            <input type="date" v-model="card.dateDeadline">
+                        </p>
+                        <p>
+                            <input type="submit" value="Отредактировать задачу">
+                        </p>
+                    </form>
+                </div>
             </ul>
-            <button @click="deleteCard(card)">Удалить</button>
-            <button @click="updateC">Редактировать</button>
-            <div v-if="updateCard">
-                <form @submit.prevent="updateTask(card)">
-                    <p>Заголовок:
-                        <input type="text" v-model="card.title" maxlength="50" placeholder="">
-                    </p>
-                    <p>Описание:
-                        <textarea v-model="card.description" cols="25" rows="5"></textarea>
-                    </p>
-                    <p>Дедлайн:
-                        <input type="date" v-model="card.dateDeadline">
-                    </p>
-                    <p>
-                        <input type="submit" value="Отредактировать задачу">
-                    </p>
-                </form>
-            </div>
         </div>
     </div>
     `,
@@ -130,14 +127,14 @@ Vue.component('column1', {
         deleteCard(card){
             this.column1.splice(this.column1.indexOf(card), 1)
         },
-        updateC(){
-            this.updateCard = true
-            console.log(this.updateCard)
+        updateC(card){
+            card.updateCard = true
+            console.log(card.updateCard)
         },
         updateTask(card){
             this.column1.push(card)
             this.column1.splice(this.column1.indexOf(card), 1)
-        }
+        },
     },
 });
 
@@ -153,7 +150,7 @@ Vue.component('column2', {
     methods: {
 
     },
-})
+});
 
 Vue.component('column3', {
     props:{
@@ -167,7 +164,7 @@ Vue.component('column3', {
     methods: {
 
     },
-})
+});
 
 Vue.component('column4', {
     props:{
@@ -181,7 +178,7 @@ Vue.component('column4', {
     methods: {
 
     },
-})
+});
 
 let app = new Vue({
     el:'#app',
