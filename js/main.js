@@ -141,6 +141,48 @@ Vue.component('column1', {
     },
 });
 
+Vue.component('column2', {
+    props:{
+
+    },
+    template:`
+    <div class="column">
+        <h3>Задачи в работе</h3>
+    </div>
+    `,
+    methods: {
+
+    },
+})
+
+Vue.component('column3', {
+    props:{
+
+    },
+    template:`
+    <div class="column">
+        <h3>Тестирование</h3>
+    </div>
+    `,
+    methods: {
+
+    },
+})
+
+Vue.component('column4', {
+    props:{
+
+    },
+    template:`
+    <div class="column">
+        <h3>Выполненные задачи</h3>
+    </div>
+    `,
+    methods: {
+
+    },
+})
+
 let app = new Vue({
     el:'#app',
     data:{
