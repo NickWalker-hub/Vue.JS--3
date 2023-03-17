@@ -1,12 +1,62 @@
-textarea{
-    resize: revert;
+*{
+    font-weight: 500;
 }
 
-.column{
+
+textarea{
+    resize: revert;
+    padding: 8px 41px;
+    border-radius: 12px;
+    border: #48523D solid 2px;
+}
+
+body{
+    background-color: aquamarine;
+    font-family: FreeMono, monospace;
+}
+
+form{
     text-align: center;
-    width: 30%;
+}
+
+h2{
+    text-align: center;
+}
+
+.card{
+    margin-bottom: 30px;
+    margin-top: 25px;
+    background-color: rgba(92,98,181,0.68);
+    border: #d4b5c8 inset 2px;
+    border-radius: 10px;
+    padding: 14px;
+}
+
+#columns{
+    display: flex;
+}
+.column{
+    width: 20%;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.change{
+    border-top: rgba(31,72,181,0.68) 2px double;
+    margin-top: 20px;
+}
+
+ul{
+    padding: 0;
+    margin-bottom: 0px;
 }
 
 li{
     list-style-type: none;
+    margin: 5px;
+}
+
+button{
+    padding: 5px 8px;
+    border-radius: 5px;
 }
