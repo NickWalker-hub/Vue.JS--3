@@ -65,7 +65,7 @@ Vue.component('fill', {
                 <input required type="text" v-model="title" maxlength="30" placeholder="">
             </p>
            <p class="pForm">Описание: </p>
-            <textarea v-model="description" cols="30" rows="4"></textarea>
+            <textarea v-model="description" cols="32" rows="4"></textarea>
             <p class="pForm">Дедлайн: 
                 <input required type="date" v-model="dateDeadLine">
             </p>
@@ -185,7 +185,7 @@ Vue.component('column2', {
     },
     template:`
     <div class="column">
-        <h3>Задачи в работе</h3>
+        <h3>В работе</h3>
          <div class="card" v-for="card in column2">
             <ul>
                  <li class="title"><b>Заголовок: </b>{{ card.title }}</li>
